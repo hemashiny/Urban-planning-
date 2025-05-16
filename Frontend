@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Planning and Design Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="script.js"></script>
+</body>
+</html>/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    width: 80%;
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+#fileLabel {
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.dashboard {
+    width: 250px;
+}
+
+.dashboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+#section-content {
+    margin-top: 20px;
+    background-color: #e9f7ef;
+    padding: 15px;
+    border-radius: 4px;
+}const app = document.getElementById("app");
+
+let isLoggedIn = false;
+let username = "";
+let password = "";
+let dashboardVisible = false;
+
+// Content Mapping
+const contentMapping = {
+  "Traffic Congestion": `
+    <h3>Traffic Congestion</h3>
+    <p>Urban areas have significant traffic congestion challenges due to population density and infrastructure demands.</p>
+  `,
+  "Public Space": `
+    <h3>Public Space</h3>
+    <p>Public spaces are essential for urban livability and community engagement.</p>
+  `,
+  "Affordable Housing": `
+    <h3>Affordable Housing</h3>
+    <p>Affordable housing is a critical aspect of urban planning to ensure inclusive communities.</p>
+  `,
+  "Climate Vulnerability": `
+    <h3>Climate Vulnerability</h3>
+    <p>Urban areas are increasingly vulnerable to climate impacts such as rising temperatures, flooding, and severe weather events.</p>
+  `
+};
+
+function render() {
+  if (isLoggedIn && !dashboardVisible) {
+    app.innerHTML = `
+      <div class="card">
+         <h2>Welcome to Urban Planning and Design</h2>
+         <p>Login Successful</p>
+         <label id="fileLabel" for="fileUpload">Upload File</label>
+         <input type="file" id="fileUpload" onchange="handleFileUpload(event)" />
+       </div>
+    `;
+  } else if (isLoggedIn && dashboardVisible) {
+    app.innerHTML = `
+      <div class="container">
+         <div class="dashboard card">
+           <h3>Dashboard</h3>
+           <ul>
+             <li><button onclick="viewSection('Traffic Congestion')">Traffic Congestion</button></li>
+             <li><button onclick="viewSection('Public Space')">Public Space</button></li>
+             <li><button onclick="viewSection('Affordable Housing')">Affordable Housing</button></li>
+             <li><button onclick="viewSection('Climate Vulnerability')">Climate Vulnerability</button></li>
+           </ul>
+           <button onclick="handleLogout()">Sign Out</button>
+         </div>
+         
+         <div class="content card">
+           <h2>Urban Planning Dashboard</h2>
+           <div id="section-content">
+              <p>Select a category from the dashboard to see details.</p>
+           </div>
+         </div>
+       </div>
+    `;
+  } else {
+    app.innerHTML = `
+      <div class="card">
+         <h2>Login</h2>
+         <input type="text" placeholder="Username" id="username" />
+         <input type="password" placeholder="Password" id="password" />
+         <button onclick="handleLogin()">Sign In</button>
+       </div>
+    `;
+  }
+}
+
+function viewSection(section) {
+  const contentDiv = document.getElementById("section-content");
+  contentDiv.innerHTML = contentMapping[section];
+}
+
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    alert(`File "${file.name}" uploaded successfully.`);
+    dashboardVisible = true;
+    render();
+  } else {
+    alert("No file selected.");
+  }
+}
+
+function handleLogin() {
+  username = document.getElementById("username").value;
+  password = document.getElementById("password").value;
+  if (username && password) {
+    isLoggedIn = true;
+    dashboardVisible = false;
+    render();
+  } else {
+    alert("Please enter both username and password.");
+  }
+}
+
+function handleLogout() {
+  isLoggedIn = false;
+  username = "";
+  password = "";
+  dashboardVisible = false;
+  render();
+}
+
+render();
